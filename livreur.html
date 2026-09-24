@@ -1,0 +1,13 @@
+
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Livreur V9 Secure</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-orange-50 min-h-screen">
+    <script src="script.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+const SECURITY_KEY="DigiCom2027@"; if(localStorage.getItem('dc_key')!==SECURITY_KEY) localStorage.setItem('dc_key',SECURITY_KEY);
+function getCmds(){return JSON.parse(localStorage.getItem('commandes_v8')||'[]');}function saveCmds(c){localStorage.setItem('commandes_v8',JSON.stringify(c));}
+function render(){let cmds=getCmds().filter(c=>c.statut.includes('Paye'));document.getElementById('count').innerText=cmds.length+' payee(s)';document.getElementById('list').innerHTML=cmds.map(c=>`<div class='bg-white rounded-2xl shadow p-4 mb-3 border-l-8 border-green-500'><div class='flex justify-between'><div><b>${c.ref}</b><p class=text-xs>${c.transId} | ${c.distance||''}</p></div><b class=text-green-700>${c.total}F</b></div><div class='mt-2 p-2 bg-gray-50 rounded-xl text-xs'>Acheteur <b>${c.acheteur}</b> ${c.tel}<br>${c.adresse}<br>GPS ${c.gps}<br>Vendeur ${c.numVendeur}</div><div class='flex gap-2 mt-3 flex-wrap'><button onclick='livre("${c.ref}")' class='flex-1 bg-green-600 text-white py-3 rounded-xl font-bold'>✅ Livre</button><a href='tel:${c.tel}' class='bg-green-700 text-white px-4 py-3 rounded-xl text-xs font-bold'>📞 Client</a><a href='tel:${c.numVendeur}' class='bg-blue-600 text-white px-4 py-3 rounded-xl text-xs font-bold'>📞 Vendeur</a><a href='tel:93721174' class='bg-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold'>📞 Admin Reclamation</a><a href='https://www.google.com/maps/dir/?api=1&destination=${c.gps}' target=_blank class='bg-gray-900 text-white px-4 py-3 rounded-xl text-xs'>📍 GPS</a></div></div>`).join('')||'<div class="bg-white p-12 rounded-3xl text-center"><p class="text-4xl">📦</p><p class="mt-2 font-bold">Aucune commande payee</p></div>';}
+function livre(ref){if(!confirm('Livre '+ref+'?'))return;let cmds=getCmds();let i=cmds.findIndex(x=>x.ref===ref);cmds[i].statut='Livre le '+new Date().toLocaleString();saveCmds(cmds);render();}
+window.onload=render;
+</script>
+<header class="bg-orange-500 text-white p-4 sticky top-0 z-20 flex justify-between"><div><b>🛵 Livreur V9 SECURE</b><p class="text-xs">Frais auto + Appels</p></div><span id="count" class="bg-white text-orange-600 px-3 py-1 rounded-full text-xs font-bold">0</span></header>
+<div class="max-w-4xl mx-auto p-4"><div id="list"></div></div>
+</body></html>
